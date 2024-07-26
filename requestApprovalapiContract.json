@@ -1,0 +1,22 @@
+createUser
+requestBody:
+   {
+	   "name" : "Aditya",
+	   "email": "beniwal@gmail.com",
+	   "phone" : "98675432",
+	   "DOB" : "10-01-1998",
+	   "role": "Creator,Level_1,Level_2"
+   }
+reponseBody:
+{
+	"responseMessage" : "Success",
+	"responseCode" : "200",
+	"Data" : {
+		"user_id" : "ud_3",
+		"name"    : "Aditya",
+	   "email": "beniwal@gmail.com",
+	   "phone" : "98675432",
+	   "DOB" : "10-01-1998",
+	   "role": "Creator,Level_1,Level_2"
+	}	
+}
