@@ -3,6 +3,8 @@ package com.requestapproval.requestapproval.Dto.CreateUser;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class CreateUserRequestDto {
     @JsonProperty("name")
@@ -12,7 +14,7 @@ public class CreateUserRequestDto {
     @JsonProperty("phone")
     String phone;
     @JsonProperty("DOB")
-    String DOB;
+    Date DOB;
     @JsonProperty("role")
     String role;
 }
