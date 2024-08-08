@@ -10,21 +10,48 @@ CREATE TABLE `requestapproval`.`users` (
   UNIQUE KEY `unique_phone` (`phone`));
   commit;
 
+----------------------------
+
+CREATE TABLE `requestapproval`.`role_description` (
+                                                      `role_id` VARCHAR(255) NOT NULL,
+                                                      `role_description` VARCHAR(45) NOT NULL,
+                                                      `name` VARCHAR(45) NULL,
+                                                      PRIMARY KEY (`role_id`));
+
   --------------------------------------------
-  CREATE TABLE `requestapproval`.`user_role` (
-  `id` INT NOT NULL auto_increment,
-  `usr_id` VARCHAR(10) NOT NULL,
-  `role_id` VARCHAR(255) NOT NULL,
-  `status` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`usr_id`) REFERENCES `users`(`usr_id`),
-  FOREIGN KEY (`role_id`) REFERENCES `role_description`(`role_id`)
-  )AUTO_INCREMENT =1 ;
+CREATE TABLE `requestapproval`.`requests` (
+                                              `req_rev_id` INT NOT NULL AUTO_INCREMENT,
+                                              `req_id` INT NOT NULL,
+                                              `rev_id` INT NOT NULL,
+                                              `description` VARCHAR(45) NULL,
+                                              `amount` VARCHAR(45) NULL,
+                                              `status` VARCHAR(45) NULL,
+                                              `creator` VARCHAR(45) NOT NULL,
+                                              PRIMARY KEY (`req_rev_id`),
+                                              INDEX `userId_idx` (`creator` ASC) VISIBLE,
+                                              CONSTRAINT `userId`
+                                                  FOREIGN KEY (`creator`)
+                                                      REFERENCES `requestapproval`.`users` (`usr_id`)
+                                                      ON DELETE NO ACTION
+                                                      ON UPDATE NO ACTION);
+ALTER TABLE users AUTO_INCREMENT=1001;
 
-  ----------------------------
+------------------------------------------------
 
-  CREATE TABLE `requestapproval`.`role_description` (
-  `role_id` VARCHAR(255) NOT NULL,
-  `role_description` VARCHAR(45) NOT NULL,
-  `name` VARCHAR(45) NULL,
-  PRIMARY KEY (`role_id`));
+CREATE TABLE `requestapproval`.`approval` (
+                                              `req_rev_id` INT NOT NULL,
+                                              `role_id` VARCHAR(45) NOT NULL,
+                                              `approval_status` VARCHAR(45) NOT NULL,
+                                              `comment` VARCHAR(45) NULL,
+                                              INDEX `req_rev_id_idx` (`req_rev_id` ASC) VISIBLE,
+                                              INDEX `role_idx` (`role_id` ASC) VISIBLE,
+                                              CONSTRAINT `req_rev_id`
+                                                  FOREIGN KEY (`req_rev_id`)
+                                                      REFERENCES `requestapproval`.`requests` (`req_rev_id`)
+                                                      ON DELETE NO ACTION
+                                                      ON UPDATE NO ACTION,
+                                              CONSTRAINT `role`
+                                                  FOREIGN KEY (`role_id`)
+                                                      REFERENCES `requestapproval`.`role_description` (`role_id`)
+                                                      ON DELETE NO ACTION
+                                                      ON UPDATE NO ACTION);
