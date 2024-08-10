@@ -20,15 +20,9 @@ public class UserController
     @PostMapping(path = "/createUser")
     public String createUser(@RequestBody CreateUserRequestDto createUserRequestDto) throws Exception
     {
-        String response = userService.CreateUser(createUserRequestDto);
-        return response;
+        return userService.CreateUser(createUserRequestDto);
 
     }
-    @PostMapping(path = "/createRole")
-    public String createRole(@RequestBody CreateRoleRequestDto createRoleRequestDto) throws Exception
-    {
-        String response = createRoleService.createRole(createRoleRequestDto);
-        return response;
-    }
+
 
 }

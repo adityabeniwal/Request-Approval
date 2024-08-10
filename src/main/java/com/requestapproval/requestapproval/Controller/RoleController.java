@@ -1,6 +1,7 @@
 package com.requestapproval.requestapproval.Controller;
 
 
+import com.requestapproval.requestapproval.Dto.RoleDTO.CreateRoleRequestDto;
 import com.requestapproval.requestapproval.Dto.RoleDTO.RoleDescriptionResponseDto;
 import com.requestapproval.requestapproval.Exception.DataNotFoundException;
 import com.requestapproval.requestapproval.Model.RoleDescription.RoleDescriptionEntity;
@@ -23,6 +24,12 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
+    @PostMapping(path = "/createRole")
+    public String createRole(@RequestBody CreateRoleRequestDto createRoleRequestDto) throws Exception
+    {
+        return roleService.createRole(createRoleRequestDto);
+    }
+
     @GetMapping("/{roleId}")
     public RoleDescriptionResponseDto getRoleByRoleId(@PathVariable String roleId) {
         return roleService.getRoleByRoleId(roleId);
@@ -32,4 +39,5 @@ public class RoleController {
     public RoleDescriptionResponseDto updateRoleDetails(@PathVariable String roleId, @RequestBody RoleDescriptionEntity roleDetails) {
         return roleService.updateRoleDetails(roleId, roleDetails);
     }
+
 }
