@@ -1,5 +1,6 @@
 package com.requestapproval.requestapproval.Service;
 
+import com.requestapproval.requestapproval.Dto.RoleDTO.RoleDescriptionRequestDto;
 import com.requestapproval.requestapproval.Dto.RoleDTO.CreateRoleRequestDto;
 import com.requestapproval.requestapproval.Dto.RoleDTO.RoleDescriptionResponseDto;
 import com.requestapproval.requestapproval.Exception.DataNotFoundException;
@@ -52,7 +53,7 @@ public class RoleService {
     }
 
     //Update the role Details
-   public RoleDescriptionResponseDto updateRoleDetails(String roleId, RoleDescriptionEntity updatedRoleDetails) {
+   public RoleDescriptionResponseDto updateRoleDetails(String roleId, RoleDescriptionRequestDto updatedRoleDetails) {
         Optional<RoleDescriptionEntity> oldDetails= roleDescriptionRepo.findById(roleId);
         if(oldDetails.isPresent()) {
             RoleDescriptionEntity roleDetails= oldDetails.get();

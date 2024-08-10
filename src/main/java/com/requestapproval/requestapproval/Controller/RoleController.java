@@ -1,14 +1,11 @@
 package com.requestapproval.requestapproval.Controller;
 
 
+import com.requestapproval.requestapproval.Dto.RoleDTO.RoleDescriptionRequestDto;
 import com.requestapproval.requestapproval.Dto.RoleDTO.CreateRoleRequestDto;
 import com.requestapproval.requestapproval.Dto.RoleDTO.RoleDescriptionResponseDto;
-import com.requestapproval.requestapproval.Exception.DataNotFoundException;
-import com.requestapproval.requestapproval.Model.RoleDescription.RoleDescriptionEntity;
 import com.requestapproval.requestapproval.Service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,8 +33,9 @@ public class RoleController {
     }
 
     @PutMapping("/{roleId}")
-    public RoleDescriptionResponseDto updateRoleDetails(@PathVariable String roleId, @RequestBody RoleDescriptionEntity roleDetails) {
+    public RoleDescriptionResponseDto updateRoleDetails(@PathVariable String roleId, @RequestBody RoleDescriptionRequestDto roleDetails) {
         return roleService.updateRoleDetails(roleId, roleDetails);
     }
+
 
 }

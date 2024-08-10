@@ -3,10 +3,9 @@ package com.requestapproval.requestapproval.Dto.RoleDTO;
 import lombok.Data;
 
 @Data
-public class RoleDescriptionResponseDto {
+public class RoleDescriptionRequestDto {
 
-    String roleDescription;
     String name;
-    String roleId;
+    String roleDescription;
 
 }
