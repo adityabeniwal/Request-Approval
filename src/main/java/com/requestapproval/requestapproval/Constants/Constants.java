@@ -10,4 +10,12 @@ public class Constants {
 
         public static final String PREFIX = "rd_";
     }
+    public static class RequestStatus {
+        public static final String NewRequest = "New_Req";
+        public static final String Pending = "Pending";
+        public static final String Revoked = "Revoked";
+        public static final String NewRevision = "New_Rev";
+        public static final String Approved = "Approved";
+        public static final String Declined = "Declined";
+    }
 }

@@ -1,5 +1,8 @@
 package com.requestapproval.requestapproval.Utils;
 
+import com.requestapproval.requestapproval.Dto.Request.CreateRequestRequestDto;
+import com.requestapproval.requestapproval.Model.Approval.ApprovalEntity;
+import com.requestapproval.requestapproval.Model.Request.RequestEntity;
 import com.requestapproval.requestapproval.Model.RoleDescription.RoleDescriptionEntity;
 import com.requestapproval.requestapproval.Model.RoleDescription.RoleDescriptionRepo;
 import com.requestapproval.requestapproval.Model.User.UsersEntity;
@@ -9,6 +12,9 @@ import com.requestapproval.requestapproval.Model.UserRole.UserRoleRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class RaUtils {
@@ -22,5 +28,15 @@ public class RaUtils {
         usersRepo.save(usersEntity);
         userRoleEntity.setUsrId(usersEntity.getUsrId());
         userRoleRepo.save(userRoleEntity);
+    }
+
+    public List<ApprovalEntity> calculateApproval(RequestEntity requestEntity)
+    {
+        List<ApprovalEntity> approvalEntities = new ArrayList<>();
+
+        if (requestEntity.getAmount() >= 100)
+        {
+            approvalEntities.add(new ApprovalEntity(requestEntity.getReqRevID(),"rd_1",))
+        }
     }
 }
