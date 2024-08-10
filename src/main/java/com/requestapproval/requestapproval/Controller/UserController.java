@@ -1,14 +1,11 @@
 package com.requestapproval.requestapproval.Controller;
 
-import com.requestapproval.requestapproval.Dto.CreateRole.CreateRoleRequestDto;
-import com.requestapproval.requestapproval.Dto.CreateUser.CreateUserRequestDto;
-import com.requestapproval.requestapproval.Service.CreateRoleService;
-import com.requestapproval.requestapproval.Service.CreateUserService;
+import com.requestapproval.requestapproval.Dto.RoleDTO.CreateRoleRequestDto;
+import com.requestapproval.requestapproval.Dto.UserDTO.CreateUserRequestDto;
+import com.requestapproval.requestapproval.Service.RoleService;
+import com.requestapproval.requestapproval.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -16,14 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController
 {
     @Autowired
-    CreateUserService createUserService;
+    UserService userService;
     @Autowired
-    CreateRoleService createRoleService;
+    RoleService createRoleService;
 
     @PostMapping(path = "/createUser")
     public String createUser(@RequestBody CreateUserRequestDto createUserRequestDto) throws Exception
     {
-        String response = createUserService.CreateUser(createUserRequestDto);
+        String response = userService.CreateUser(createUserRequestDto);
         return response;
 
     }

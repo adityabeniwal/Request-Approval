@@ -3,7 +3,6 @@ package com.requestapproval.requestapproval.Utils;
 import com.requestapproval.requestapproval.Constants.Constants;
 import com.requestapproval.requestapproval.Model.RoleDescription.RoleDescriptionRepo;
 import com.requestapproval.requestapproval.Model.User.UsersRepo;
-import com.requestapproval.requestapproval.Model.UserRole.UserRoleRepo;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
