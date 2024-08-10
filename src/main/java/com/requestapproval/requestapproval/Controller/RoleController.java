@@ -32,7 +32,7 @@ public class RoleController {
         return roleService.getRoleByRoleId(roleId);
     }
 
-    @PutMapping("/{roleId}")
+    @PutMapping("/updateRole/{roleId}")
     public RoleDescriptionResponseDto updateRoleDetails(@PathVariable String roleId, @RequestBody RoleDescriptionRequestDto roleDetails) {
         return roleService.updateRoleDetails(roleId, roleDetails);
     }
