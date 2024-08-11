@@ -5,10 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface UsersRepo extends JpaRepository<UsersEntity,String>
 {
 
     @Query(value = "SELECT COALESCE(MAX(CAST(SUBSTRING(usr_id, 5) AS UNSIGNED)), 0) FROM users", nativeQuery = true)
     int findMaxUsrId();
+
 }
