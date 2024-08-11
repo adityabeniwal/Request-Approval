@@ -18,4 +18,11 @@ public class Constants {
         public static final String Approved = "Approved";
         public static final String Declined = "Declined";
     }
+
+    public static class ApprovalStatus {
+        public static final String New = "New";
+        public static final String Pending = "Pending";
+        public static final String Approve = "Approve";
+        public static final String Decline = "Decline";
+    }
 }

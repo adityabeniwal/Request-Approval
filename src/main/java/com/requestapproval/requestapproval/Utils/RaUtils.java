@@ -1,5 +1,6 @@
 package com.requestapproval.requestapproval.Utils;
 
+import com.requestapproval.requestapproval.Constants.Constants;
 import com.requestapproval.requestapproval.Dto.Request.CreateRequestRequestDto;
 import com.requestapproval.requestapproval.Model.Approval.ApprovalEntity;
 import com.requestapproval.requestapproval.Model.Request.RequestEntity;
@@ -30,13 +31,4 @@ public class RaUtils {
         userRoleRepo.save(userRoleEntity);
     }
 
-    public List<ApprovalEntity> calculateApproval(RequestEntity requestEntity)
-    {
-        List<ApprovalEntity> approvalEntities = new ArrayList<>();
-
-        if (requestEntity.getAmount() >= 100)
-        {
-            approvalEntities.add(new ApprovalEntity(requestEntity.getReqRevID(),"rd_1",))
-        }
-    }
 }
