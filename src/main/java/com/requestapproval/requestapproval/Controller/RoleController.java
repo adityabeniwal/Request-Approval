@@ -1,7 +1,7 @@
 package com.requestapproval.requestapproval.Controller;
 
 
-import com.requestapproval.requestapproval.Dto.RoleDTO.RoleDescriptionRequestDto;
+import com.requestapproval.requestapproval.Dto.RoleDTO.UpdateRoleDescriptionRequestDto;
 import com.requestapproval.requestapproval.Dto.RoleDTO.CreateRoleRequestDto;
 import com.requestapproval.requestapproval.Dto.RoleDTO.RoleDescriptionResponseDto;
 import com.requestapproval.requestapproval.Service.RoleService;
@@ -33,8 +33,8 @@ public class RoleController {
     }
 
     @PutMapping("/updateRole/{roleId}")
-    public RoleDescriptionResponseDto updateRoleDetails(@PathVariable String roleId, @RequestBody RoleDescriptionRequestDto roleDetails) {
-        return roleService.updateRoleDetails(roleId, roleDetails);
+    public RoleDescriptionResponseDto updateRoleDetails(@PathVariable String roleId, @RequestBody UpdateRoleDescriptionRequestDto updateRoleDescriptionRequestDto) {
+        return roleService.updateRoleDetails(roleId, updateRoleDescriptionRequestDto);
     }
 
 

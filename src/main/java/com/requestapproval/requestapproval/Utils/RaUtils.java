@@ -8,8 +8,8 @@ import com.requestapproval.requestapproval.Model.RoleDescription.RoleDescription
 import com.requestapproval.requestapproval.Model.RoleDescription.RoleDescriptionRepo;
 import com.requestapproval.requestapproval.Model.User.UsersEntity;
 import com.requestapproval.requestapproval.Model.User.UsersRepo;
-import com.requestapproval.requestapproval.Model.UserRole.UserRoleEntity;
-import com.requestapproval.requestapproval.Model.UserRole.UserRoleRepo;
+import com.requestapproval.requestapproval.Model.Role.UserRoleEntity;
+import com.requestapproval.requestapproval.Model.Role.UserRoleRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

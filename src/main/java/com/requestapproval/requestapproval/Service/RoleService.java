@@ -1,6 +1,6 @@
 package com.requestapproval.requestapproval.Service;
 
-import com.requestapproval.requestapproval.Dto.RoleDTO.RoleDescriptionRequestDto;
+import com.requestapproval.requestapproval.Dto.RoleDTO.UpdateRoleDescriptionRequestDto;
 import com.requestapproval.requestapproval.Dto.RoleDTO.CreateRoleRequestDto;
 import com.requestapproval.requestapproval.Dto.RoleDTO.RoleDescriptionResponseDto;
 import com.requestapproval.requestapproval.Exception.DataNotFoundException;
@@ -33,7 +33,7 @@ public class RoleService {
     {
         RoleDescriptionEntity roleDescriptionEntity = new RoleDescriptionEntity();
         roleDescriptionEntity.setRoleId(basicUtils.uniqueRoleIdGenerate());
-        roleDescriptionEntity.setRoleDescription(createRoleRequestDto.getDescription());
+        roleDescriptionEntity.setRoleDescription(createRoleRequestDto.getRoleDescription());
         roleDescriptionEntity.setName(createRoleRequestDto.getName());
         roleDescriptionRepo.save(roleDescriptionEntity);
         return " Role_id = " +  roleDescriptionEntity.getRoleId();
@@ -53,15 +53,15 @@ public class RoleService {
     }
 
     //Update the role Details
-   public RoleDescriptionResponseDto updateRoleDetails(String roleId, RoleDescriptionRequestDto updatedRoleDetails) {
+   public RoleDescriptionResponseDto updateRoleDetails(String roleId, UpdateRoleDescriptionRequestDto updateRoleDescriptionRequestDto) {
         Optional<RoleDescriptionEntity> oldDetails= roleDescriptionRepo.findById(roleId);
         if(oldDetails.isPresent()) {
             RoleDescriptionEntity roleDetails= oldDetails.get();
-            if(updatedRoleDetails.getRoleDescription()!=null){
-                roleDetails.setRoleDescription(updatedRoleDetails.getRoleDescription());
+            if(updateRoleDescriptionRequestDto.getRoleDescription()!=null){
+                roleDetails.setRoleDescription(updateRoleDescriptionRequestDto.getRoleDescription());
             }
-            if(updatedRoleDetails.getName()!=null){
-                roleDetails.setName(updatedRoleDetails.getName());
+            if(updateRoleDescriptionRequestDto.getName()!=null){
+                roleDetails.setName(updateRoleDescriptionRequestDto.getName());
             }
             RoleDescriptionEntity savedDetails=  roleDescriptionRepo.save(roleDetails);
             return modelMapper.map(savedDetails, RoleDescriptionResponseDto.class);
