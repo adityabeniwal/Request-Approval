@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 public class CreateRoleRequestDto {
-    @JsonProperty("Description")
-    String Description;
+    @JsonProperty("roleDescription")
+    String roleDescription;
 
     @JsonProperty("name")
     String name;

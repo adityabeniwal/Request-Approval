@@ -27,7 +27,7 @@ public class UserService {
         UsersEntity usersEntity = new UsersEntity();
         UserRoleEntity userRoleEntity = new UserRoleEntity();
         //userEntity data saved
-            usersEntity.setUsrId(basicUtils.uniqueIdGenerate());
+            usersEntity.setUsrId(basicUtils.uniqueUsrIdGenerate());
             if(basicUtils.checkNullOrBlank(createUserRequestDto.getName())) {
                 return "Name can't be  null";
             }

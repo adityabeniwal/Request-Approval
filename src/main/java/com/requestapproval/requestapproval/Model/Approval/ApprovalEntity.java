@@ -1,9 +1,6 @@
 package com.requestapproval.requestapproval.Model.Approval;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -12,8 +9,15 @@ import lombok.Data;
 public class ApprovalEntity
 {
     @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name = "approval_id")
+    private int approvalId;
+
     @Column(name = "req_rev_id")
     private int reqRevID;
+
+    @Column(name = "role_id")
+    private String roleId;
 
     @Column(name = "approval_status")
     private String approvalStatus;
