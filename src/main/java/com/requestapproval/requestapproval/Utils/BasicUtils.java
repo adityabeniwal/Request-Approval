@@ -6,7 +6,6 @@ import com.requestapproval.requestapproval.Model.Request.RequestEntity;
 import com.requestapproval.requestapproval.Model.Request.RequestRepo;
 import com.requestapproval.requestapproval.Model.RoleDescription.RoleDescriptionRepo;
 import com.requestapproval.requestapproval.Model.User.UsersRepo;
-import com.requestapproval.requestapproval.Model.UserRole.UserRoleRepo;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

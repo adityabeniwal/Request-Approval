@@ -1,12 +1,13 @@
-package com.requestapproval.requestapproval.Dto.CreateRole;
+package com.requestapproval.requestapproval.Dto.RoleDTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
 public class CreateRoleRequestDto {
-    @JsonProperty("description")
-    String Description;
+    @JsonProperty("roleDescription")
+    String roleDescription;
+
     @JsonProperty("name")
     String name;
 }
