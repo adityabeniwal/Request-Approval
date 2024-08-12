@@ -34,23 +34,25 @@ CREATE TABLE `requestapproval`.`requests` (
                                                       REFERENCES `requestapproval`.`users` (`usr_id`)
                                                       ON DELETE NO ACTION
                                                       ON UPDATE NO ACTION);
-ALTER TABLE users AUTO_INCREMENT=1001;
+ALTER TABLE requests AUTO_INCREMENT=1001;
 
 ------------------------------------------------
 
 CREATE TABLE `requestapproval`.`approval` (
+                                              `approval_id` INT NOT NULL AUTO_INCREMENT,
                                               `req_rev_id` INT NOT NULL,
                                               `role_id` VARCHAR(45) NOT NULL,
                                               `approval_status` VARCHAR(45) NOT NULL,
                                               `comment` VARCHAR(45) NULL,
-                                              INDEX `req_rev_id_idx` (`req_rev_id` ASC) VISIBLE,
-                                              INDEX `role_idx` (`role_id` ASC) VISIBLE,
-                                              CONSTRAINT `req_rev_id`
+                                              PRIMARY KEY (`aprroval_id`),
+                                              INDEX `req_rev_id_fk_idx` (`req_rev_id` ASC) VISIBLE,
+                                              INDEX `role_id_fk_idx` (`role_id` ASC) VISIBLE,
+                                              CONSTRAINT `req_rev_id_fk`
                                                   FOREIGN KEY (`req_rev_id`)
                                                       REFERENCES `requestapproval`.`requests` (`req_rev_id`)
                                                       ON DELETE NO ACTION
                                                       ON UPDATE NO ACTION,
-                                              CONSTRAINT `role`
+                                              CONSTRAINT `role_id_fk`
                                                   FOREIGN KEY (`role_id`)
                                                       REFERENCES `requestapproval`.`role_description` (`role_id`)
                                                       ON DELETE NO ACTION

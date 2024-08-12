@@ -1,10 +1,8 @@
 package com.requestapproval.requestapproval.Model.Request;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Data
@@ -12,6 +10,7 @@ import lombok.Data;
 public class RequestEntity
 {
     @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "req_rev_id")
     private int reqRevID;
 
@@ -29,7 +28,7 @@ public class RequestEntity
 
 
     @Column(name = "amount")
-    private String amount;
+    private int amount;
 
 
     @Column(name = "status")

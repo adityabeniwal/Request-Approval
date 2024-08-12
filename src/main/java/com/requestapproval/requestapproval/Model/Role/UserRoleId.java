@@ -1,4 +1,4 @@
-package com.requestapproval.requestapproval.Model.UserRole;
+package com.requestapproval.requestapproval.Model.Role;
 
 import java.io.Serializable;
 

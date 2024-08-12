@@ -13,8 +13,10 @@ public class RoleDescriptionEntity {
     @Id
     @Column(name = "role_id")
     String roleId;
+
     @Column(name = "role_description")
     String roleDescription;
+
     @Column(name = "name")
     String name;
 }
