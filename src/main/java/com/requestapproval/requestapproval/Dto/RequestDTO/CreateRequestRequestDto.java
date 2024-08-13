@@ -1,4 +1,4 @@
-package com.requestapproval.requestapproval.Dto.Request;
+package com.requestapproval.requestapproval.Dto.RequestDTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
