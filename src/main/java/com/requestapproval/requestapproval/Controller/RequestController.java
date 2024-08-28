@@ -1,8 +1,6 @@
 package com.requestapproval.requestapproval.Controller;
 
-import com.requestapproval.requestapproval.Dto.RequestDTO.CreateRequestRequestDto;
-import com.requestapproval.requestapproval.Dto.RequestDTO.CreateRequestResponseDto;
-import com.requestapproval.requestapproval.Dto.RequestDTO.GetRequestDetailsResponseDto;
+import com.requestapproval.requestapproval.Dto.RequestDTO.*;
 import com.requestapproval.requestapproval.Service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +22,18 @@ public class RequestController
     public GetRequestDetailsResponseDto getRequestDetails (@PathVariable("reqId")  int reqId,@PathVariable("revId") int revId) throws Exception
     {
          return requestService.GetRequestDetails(reqId,revId);
+    }
+
+    @PostMapping("submitRequest/{reqId}/{revId}")
+    public SubmitRequestResponseDto submitRequest (@PathVariable("reqId")  int reqId,@PathVariable("revId") int revId , @RequestBody SubmitRequestRequestDto submitRequestRequestDto)
+    {
+        return requestService.SubmitRequest(reqId,revId,submitRequestRequestDto);
+    }
+
+    @PostMapping("revokeRequest/{reqId}/{revId}")
+    public RevokeRequestResponseDto revokeRequest (@PathVariable("reqId")  int reqId,@PathVariable("revId") int revId)
+    {
+        return requestService.RevokeRequest(reqId,revId);
     }
 
 }
