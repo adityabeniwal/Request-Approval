@@ -36,4 +36,10 @@ public class RequestController
         return requestService.RevokeRequest(reqId,revId);
     }
 
+    @PostMapping("newRevision/{reqId}/{revId}")
+    public NewRevisionResponseDto newRevision (@PathVariable("reqId")  int reqId,@PathVariable("revId") int revId)
+    {
+        return requestService.NewRevision(reqId,revId);
+    }
+
 }

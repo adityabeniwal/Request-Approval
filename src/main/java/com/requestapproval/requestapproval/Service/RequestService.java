@@ -168,24 +168,36 @@ public class RequestService {
 
     public NewRevisionResponseDto NewRevision(int reqId, int revId)
     {
-        RequestEntity requestEntity = requestRepo.findByReqIDAndRevID(reqId, revId);
+        RequestEntity oldRequestEntity = requestRepo.findByReqIDAndRevID(reqId, revId);
 
-        if (requestEntity == null) {
+        if (oldRequestEntity == null) {
             String errorMessage = String.format("Request with Request ID %s and Revision ID %s not found", reqId, revId);
             logger.error(errorMessage);
             throw new DataNotFoundException(errorMessage);
         }
 
-        logger.info("Request found: {}", requestEntity);
+        logger.info("Request found: {}", oldRequestEntity);
 
-        requestEntity.setStatus(Constants.RequestStatus.Revoked);
-        requestRepo.save(requestEntity);
-        // Prepare and return response DTO
-        RevokeRequestResponseDto revokeRequestResponseDto = new RevokeRequestResponseDto();
-        revokeRequestResponseDto.setReqId(requestEntity.getReqID());
-        revokeRequestResponseDto.setRevId(requestEntity.getRevID());
-        revokeRequestResponseDto.setStatus(requestEntity.getStatus());
+        RequestEntity newRequestEntity = new RequestEntity();
 
-        return revokeRequestResponseDto;
+        newRequestEntity.setReqID(oldRequestEntity.getReqID());
+        newRequestEntity.setRevID(oldRequestEntity.getRevID()+1);
+        newRequestEntity.setDescription(oldRequestEntity.getDescription());
+        newRequestEntity.setCreator(oldRequestEntity.getCreator());
+        newRequestEntity.setAmount(oldRequestEntity.getAmount());
+        newRequestEntity.setStatus(Constants.RequestStatus.NewRevision);
+
+        newRequestEntity = requestRepo.save(newRequestEntity);
+
+        List<ApprovalEntity> approvalEntities = basicUtils.calculateApproval(newRequestEntity);
+
+        if (approvalEntities.isEmpty()) {
+            newRequestEntity.setStatus(Constants.RequestStatus.Approved);
+            requestRepo.save(newRequestEntity);
+        } else {
+            approvalRepo.saveAll(approvalEntities);
+        }
+
+        return modelMapper.map(newRequestEntity, NewRevisionResponseDto.class);
     }
 }
