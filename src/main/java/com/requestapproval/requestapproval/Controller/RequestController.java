@@ -24,22 +24,28 @@ public class RequestController
          return requestService.GetRequestDetails(reqId,revId);
     }
 
-    @PostMapping("submitRequest/{reqId}/{revId}")
+    @PostMapping("/submitRequest/{reqId}/{revId}")
     public SubmitRequestResponseDto submitRequest (@PathVariable("reqId")  int reqId,@PathVariable("revId") int revId , @RequestBody SubmitRequestRequestDto submitRequestRequestDto)
     {
         return requestService.SubmitRequest(reqId,revId,submitRequestRequestDto);
     }
 
-    @PostMapping("revokeRequest/{reqId}/{revId}")
+    @PostMapping("/revokeRequest/{reqId}/{revId}")
     public RevokeRequestResponseDto revokeRequest (@PathVariable("reqId")  int reqId,@PathVariable("revId") int revId)
     {
         return requestService.RevokeRequest(reqId,revId);
     }
 
-    @PostMapping("newRevision/{reqId}/{revId}")
+    @PostMapping("/newRevision/{reqId}/{revId}")
     public NewRevisionResponseDto newRevision (@PathVariable("reqId")  int reqId,@PathVariable("revId") int revId)
     {
         return requestService.NewRevision(reqId,revId);
     }
 
+    @PostMapping("/{reqId}/{revId}/approve")
+    public ApproveRequestResponseDto approveRequest(@PathVariable("reqId")  int reqId,@PathVariable("revId") int revId, @RequestBody ApproveRequestRequestDto approveRequestRequestDto) throws Exception
+    {
+        return requestService.ApproveRequest(reqId,revId,approveRequestRequestDto);
+
+    }
 }

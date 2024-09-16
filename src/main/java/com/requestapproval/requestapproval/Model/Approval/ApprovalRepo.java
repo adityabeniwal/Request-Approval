@@ -8,4 +8,6 @@ import java.util.List;
 @Repository
 public interface ApprovalRepo extends JpaRepository<ApprovalEntity,Integer> {
     public List<ApprovalEntity> findAllByReqRevID(int reqRevID);
+
+    public ApprovalEntity findByReqRevIDAndRoleId(int reqRevID, String roleId);
 }
