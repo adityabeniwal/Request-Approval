@@ -44,7 +44,7 @@ CREATE TABLE `requestapproval`.`approval` (
                                               `role_id` VARCHAR(45) NOT NULL,
                                               `approval_status` VARCHAR(45) NOT NULL,
                                               `comment` VARCHAR(45) NULL,
-                                              PRIMARY KEY (`aprroval_id`),
+                                              PRIMARY KEY (`approval_id`),
                                               INDEX `req_rev_id_fk_idx` (`req_rev_id` ASC) VISIBLE,
                                               INDEX `role_id_fk_idx` (`role_id` ASC) VISIBLE,
                                               CONSTRAINT `req_rev_id_fk`

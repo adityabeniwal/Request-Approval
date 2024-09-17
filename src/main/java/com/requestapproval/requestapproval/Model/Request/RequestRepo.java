@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RequestRepo extends JpaRepository<RequestEntity,Integer>
 {
-    @Query(value = "SELECT max(req_id) FROM requestapproval.requests;", nativeQuery = true)
+    @Query(value = "SELECT coalesce(max(req_id),0) AS req_id FROM requests;", nativeQuery = true)
     int findMaxReqId();
 
     @Query(value = "select max(rev_id) FROM requestapproval.requests where req_id = :reqID;",nativeQuery = true)
