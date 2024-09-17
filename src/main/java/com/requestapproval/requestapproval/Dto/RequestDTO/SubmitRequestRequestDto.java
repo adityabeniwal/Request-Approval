@@ -1,17 +1,14 @@
-package com.requestapproval.requestapproval.Dto.Request;
+package com.requestapproval.requestapproval.Dto.RequestDTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class CreateRequestRequestDto
+public class SubmitRequestRequestDto
 {
     @JsonProperty("description")
     private String description;
 
     @JsonProperty("amount")
     private int amount;
-
-    @JsonProperty("creator")
-    private String creator;
 }
