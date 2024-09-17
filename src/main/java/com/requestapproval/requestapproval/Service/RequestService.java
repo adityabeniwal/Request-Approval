@@ -93,6 +93,10 @@ public class RequestService {
 
         logger.info("Request found: {}", requestEntity);
 
+        if(revId<requestRepo.findMaxRevIdByReqId(reqId) || !(Objects.equals(requestEntity.getStatus(), Constants.RequestStatus.NewRequest) || Objects.equals(requestEntity.getStatus(), Constants.RequestStatus.NewRevision)))
+        {
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Submission is only allowed for either New Request or latest New revision ");
+        }
         boolean isDescriptionChanged = !Objects.equals(requestEntity.getDescription(), submitRequestRequestDto.getDescription());
         boolean isAmountChanged = requestEntity.getAmount() != submitRequestRequestDto.getAmount();
 
@@ -146,6 +150,15 @@ public class RequestService {
 
         logger.info("Request found: {}", requestEntity);
 
+        if(revId<requestRepo.findMaxRevIdByReqId(reqId))
+        {
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Revoke is only allowed for latest revision");
+        }
+
+        if(Objects.equals(requestEntity.getStatus(), Constants.RequestStatus.Revoked) || Objects.equals(requestEntity.getStatus(), Constants.RequestStatus.Approved) || Objects.equals(requestEntity.getStatus(), Constants.RequestStatus.Declined))
+        {
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Request can't be revoked when already in " + requestEntity.getStatus() + " status");
+        }
         requestEntity.setStatus(Constants.RequestStatus.Revoked);
         requestRepo.save(requestEntity);
 
@@ -160,6 +173,15 @@ public class RequestService {
 
         RequestEntity newRequestEntity = modelMapper.typeMap(RequestEntity.class,RequestEntity.class).addMappings(mapper -> mapper.skip(RequestEntity::setReqRevID)).map(oldRequestEntity);
 
+        if(revId<requestRepo.findMaxRevIdByReqId(reqId))
+        {
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "New Revision can only be created for latest revision");
+        }
+
+        if(Objects.equals(oldRequestEntity.getStatus(), Constants.RequestStatus.NewRevision) || Objects.equals(oldRequestEntity.getStatus(), Constants.RequestStatus.NewRequest) || Objects.equals(oldRequestEntity.getStatus(), Constants.RequestStatus.Pending))
+        {
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "New Revision is not allowed when request is in " + oldRequestEntity.getStatus() + " status" );
+        }
         newRequestEntity.setRevID(oldRequestEntity.getRevID()+1);
         newRequestEntity.setStatus(Constants.RequestStatus.NewRevision);
 
@@ -182,21 +204,38 @@ public class RequestService {
         RequestEntity requestEntity = findRequestEntity(reqId, revId);
         logger.info("Request found: {}", requestEntity);
 
+        if(revId<requestRepo.findMaxRevIdByReqId(reqId) || !Objects.equals(requestEntity.getStatus(), Constants.RequestStatus.Pending))
+        {
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Approval can be triggered for latest submitted revision only");
+        }
+
         ApprovalEntity approvalEntity = approvalRepo.findByReqRevIDAndRoleId(requestEntity.getReqRevID(),approveRequestRequestDto.getRoleId());
 
         if(approvalEntity == null)
         {
             throw new DataNotFoundException("No Approval found for the given Role");
         }
-        if (Objects.equals(approvalEntity.getApprovalStatus(), Constants.ApprovalStatus.Approve))
+        if (Objects.equals(approvalEntity.getApprovalStatus(), Constants.ApprovalStatus.Approve) || Objects.equals(approvalEntity.getApprovalStatus(), Constants.ApprovalStatus.Decline) )
         {
-            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Already approved for given role");
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Requested approval is already in " + approvalEntity.getApprovalStatus() + " status" );
         }
 
         approvalEntity.setApprovalStatus(Constants.ApprovalStatus.Approve);
         approvalEntity.setComment(approveRequestRequestDto.getComment());
 
         approvalRepo.save(approvalEntity);
+
+        List<ApprovalEntity> approvalEntities = approvalRepo.findAllByReqRevID(requestEntity.getReqRevID());
+
+        boolean isAllApproved = approvalEntities.stream()
+            .allMatch(approval -> Objects.equals(approval.getApprovalStatus(), Constants.ApprovalStatus.Approve));
+
+
+        if(isAllApproved)
+        {
+            requestEntity.setStatus(Constants.RequestStatus.Approved);
+            requestRepo.save(requestEntity);
+        }
 
         return modelMapper.map(approvalEntity,ApproveRequestResponseDto.class);
     }
