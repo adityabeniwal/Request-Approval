@@ -239,4 +239,36 @@ public class RequestService {
 
         return modelMapper.map(approvalEntity,ApproveRequestResponseDto.class);
     }
+
+    public DeclineRequestResponseDto DeclineRequest (int reqId,int revId,DeclineRequestRequestDto declineRequestRequestDto) throws Exception
+    {
+        RequestEntity requestEntity = findRequestEntity(reqId, revId);
+        logger.info("Request found: {}", requestEntity);
+
+        if(revId<requestRepo.findMaxRevIdByReqId(reqId) || !Objects.equals(requestEntity.getStatus(), Constants.RequestStatus.Pending))
+        {
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Decline can be triggered for latest submitted revision only");
+        }
+
+        ApprovalEntity approvalEntity = approvalRepo.findByReqRevIDAndRoleId(requestEntity.getReqRevID(),declineRequestRequestDto.getRoleId());
+
+        if(approvalEntity == null)
+        {
+            throw new DataNotFoundException("No Approval found for the given Role");
+        }
+        if (Objects.equals(approvalEntity.getApprovalStatus(), Constants.ApprovalStatus.Approve) || Objects.equals(approvalEntity.getApprovalStatus(), Constants.ApprovalStatus.Decline) )
+        {
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Requested approval is already in " + approvalEntity.getApprovalStatus() + " status" );
+        }
+
+        approvalEntity.setApprovalStatus(Constants.ApprovalStatus.Decline);
+        approvalEntity.setComment(declineRequestRequestDto.getComment());
+
+        approvalRepo.save(approvalEntity);
+
+        requestEntity.setStatus(Constants.RequestStatus.Declined);
+        requestRepo.save(requestEntity);
+
+        return modelMapper.map(approvalEntity,DeclineRequestResponseDto.class);
+    }
 }

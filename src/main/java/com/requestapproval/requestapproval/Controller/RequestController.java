@@ -48,4 +48,11 @@ public class RequestController
         return requestService.ApproveRequest(reqId,revId,approveRequestRequestDto);
 
     }
+
+    @PostMapping("/{reqId}/{revId}/decline")
+    public DeclineRequestResponseDto declineRequest(@PathVariable("reqId")  int reqId,@PathVariable("revId") int revId, @RequestBody DeclineRequestRequestDto declineRequestRequestDto) throws Exception
+    {
+        return requestService.DeclineRequest(reqId,revId,declineRequestRequestDto);
+
+    }
 }
