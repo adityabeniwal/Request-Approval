@@ -39,7 +39,7 @@ public class RequestService {
     @Autowired
     private ModelMapper modelMapper;
 
-    private RequestEntity findRequestEntity(int reqId, int revId) {
+    public RequestEntity findRequestEntity(int reqId, int revId) {
         RequestEntity requestEntity = requestRepo.findByReqIDAndRevID(reqId, revId);
         if (requestEntity == null) {
             String errorMessage = String.format("Request with Request ID %d and Revision ID %d not found", reqId, revId);
@@ -47,6 +47,39 @@ public class RequestService {
             throw new DataNotFoundException(errorMessage);
         }
         return requestEntity;
+    }
+
+
+    @Transactional
+    public RequestEntity updateRequestData(int reqId,int revId, RequestEntity newRequestEntity)
+    {
+        RequestEntity oldRequestEntity = findRequestEntity(reqId,revId);
+
+        if (!oldRequestEntity.getDescription().equals(newRequestEntity.getDescription()) || oldRequestEntity.getAmount() != newRequestEntity.getAmount())
+        {
+            oldRequestEntity.setDescription(newRequestEntity.getDescription());
+            oldRequestEntity.setAmount(newRequestEntity.getAmount());
+
+            // Remove old approval entities
+            List<ApprovalEntity> oldApprovalEntities = approvalRepo.findAllByReqRevID(oldRequestEntity.getReqRevID());
+            if (!oldApprovalEntities.isEmpty()) {
+                approvalRepo.deleteAll(oldApprovalEntities);
+            }
+
+            // Calculate and handle new approval entities
+            List<ApprovalEntity> newApprovalEntities = basicUtils.calculateApproval(oldRequestEntity);
+            if (!newApprovalEntities.isEmpty())
+            {
+                newApprovalEntities.forEach(approvalEntity -> {
+                    approvalEntity.setApprovalStatus(Constants.ApprovalStatus.New);
+                    approvalRepo.save(approvalEntity);
+                });
+            }
+
+            requestRepo.save(oldRequestEntity);
+        }
+        return oldRequestEntity;
+
     }
 
     @Transactional
@@ -87,59 +120,47 @@ public class RequestService {
         return getRequestDetailsResponseDto;
     }
 
+    public UpdateRequestResponseDto UpdateRequest(int reqId,int revId,UpdateRequestRequestDto updateRequestRequestDto)
+    {
+        RequestEntity requestEntity = findRequestEntity(reqId, revId);
+        logger.info("Request found: {}", requestEntity);
+
+        if(revId<requestRepo.findMaxRevIdByReqId(reqId) || !(Objects.equals(requestEntity.getStatus(), Constants.RequestStatus.NewRequest) || Objects.equals(requestEntity.getStatus(), Constants.RequestStatus.NewRevision)))
+        {
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Update is only allowed for either New Request or latest New revision ");
+        }
+        RequestEntity updatedRequestEntity = updateRequestData(reqId,revId,modelMapper.map(updateRequestRequestDto,RequestEntity.class));
+
+        return modelMapper.map(updatedRequestEntity,UpdateRequestResponseDto.class);
+    }
+
     @Transactional
     public SubmitRequestResponseDto SubmitRequest(int reqId, int revId, SubmitRequestRequestDto submitRequestRequestDto) {
         RequestEntity requestEntity = findRequestEntity(reqId, revId);
-
         logger.info("Request found: {}", requestEntity);
 
         if(revId<requestRepo.findMaxRevIdByReqId(reqId) || !(Objects.equals(requestEntity.getStatus(), Constants.RequestStatus.NewRequest) || Objects.equals(requestEntity.getStatus(), Constants.RequestStatus.NewRevision)))
         {
             throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Submission is only allowed for either New Request or latest New revision ");
         }
-        boolean isDescriptionChanged = !Objects.equals(requestEntity.getDescription(), submitRequestRequestDto.getDescription());
-        boolean isAmountChanged = requestEntity.getAmount() != submitRequestRequestDto.getAmount();
 
-        if (isDescriptionChanged || isAmountChanged)
+        RequestEntity updatedRequestEntity = updateRequestData(reqId,revId,modelMapper.map(submitRequestRequestDto,RequestEntity.class));
+
+        List<ApprovalEntity> approvalEntities = approvalRepo.findAllByReqRevID(updatedRequestEntity.getReqRevID());
+        if (approvalEntities.isEmpty())
         {
-            requestEntity.setDescription(submitRequestRequestDto.getDescription());
-            requestEntity.setAmount(submitRequestRequestDto.getAmount());
-
-            // Remove old approval entities
-            List<ApprovalEntity> oldApprovalEntities = approvalRepo.findAllByReqRevID(requestEntity.getReqRevID());
-            if (!oldApprovalEntities.isEmpty()) {
-                approvalRepo.deleteAll(oldApprovalEntities);
-            }
-
-            // Calculate and handle new approval entities
-            List<ApprovalEntity> newApprovalEntities = basicUtils.calculateApproval(requestEntity);
-            if (newApprovalEntities.isEmpty()) {
-                requestEntity.setStatus(Constants.RequestStatus.Approved);
-            } else {
-                newApprovalEntities.forEach(approvalEntity -> {
-                    approvalEntity.setApprovalStatus(Constants.ApprovalStatus.Pending);
-                    approvalRepo.save(approvalEntity);
-                });
-                requestEntity.setStatus(Constants.RequestStatus.Pending);
-            }
-
+            updatedRequestEntity.setStatus(Constants.RequestStatus.Approved);
         }
-        else
-        {
-            List<ApprovalEntity> oldApprovalEntities = approvalRepo.findAllByReqRevID(requestEntity.getReqRevID());
-            if (!oldApprovalEntities.isEmpty()) {
-                oldApprovalEntities.forEach(approvalEntity -> {
-                    approvalEntity.setApprovalStatus(Constants.ApprovalStatus.Pending);
-                    approvalRepo.save(approvalEntity);
-                });
-            }
-
-            requestEntity.setStatus(Constants.RequestStatus.Pending);
+        else {
+            approvalEntities.forEach(approvalEntity -> {
+                approvalEntity.setApprovalStatus(Constants.ApprovalStatus.Pending);
+                approvalRepo.save(approvalEntity);
+            });
+            updatedRequestEntity.setStatus(Constants.RequestStatus.Pending);
         }
+        requestRepo.save(updatedRequestEntity);
 
-        requestRepo.save(requestEntity);
-
-        return modelMapper.map(requestEntity,SubmitRequestResponseDto.class);
+        return modelMapper.map(updatedRequestEntity,SubmitRequestResponseDto.class);
 
     }
 
@@ -171,8 +192,6 @@ public class RequestService {
 
         logger.info("Request found: {}", oldRequestEntity);
 
-        RequestEntity newRequestEntity = modelMapper.typeMap(RequestEntity.class,RequestEntity.class).addMappings(mapper -> mapper.skip(RequestEntity::setReqRevID)).map(oldRequestEntity);
-
         if(revId<requestRepo.findMaxRevIdByReqId(reqId))
         {
             throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "New Revision can only be created for latest revision");
@@ -182,6 +201,9 @@ public class RequestService {
         {
             throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "New Revision is not allowed when request is in " + oldRequestEntity.getStatus() + " status" );
         }
+
+        RequestEntity newRequestEntity = modelMapper.typeMap(RequestEntity.class,RequestEntity.class).addMappings(mapper -> mapper.skip(RequestEntity::setReqRevID)).map(oldRequestEntity);
+
         newRequestEntity.setRevID(oldRequestEntity.getRevID()+1);
         newRequestEntity.setStatus(Constants.RequestStatus.NewRevision);
 

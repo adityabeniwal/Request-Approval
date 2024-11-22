@@ -55,4 +55,10 @@ public class RequestController
         return requestService.DeclineRequest(reqId,revId,declineRequestRequestDto);
 
     }
+    @PostMapping("/update/{reqId}/{revId}")
+    public UpdateRequestResponseDto updateRequest(@PathVariable("reqId")  int reqId,@PathVariable("revId") int revId, @RequestBody UpdateRequestRequestDto updateRequestRequestDto) throws Exception
+    {
+        return requestService.UpdateRequest(reqId,revId,updateRequestRequestDto);
+
+    }
 }
