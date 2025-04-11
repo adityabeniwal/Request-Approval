@@ -23,7 +23,7 @@ public class BasicUtils {
     RoleDescriptionRepo roleDescriptionRepo;
     @Autowired
     RequestRepo requestRepo;
-    private  int maxUsrId;
+    private int maxUsrId;
     private int maxRoleId;
     private int maxReqId;
 
@@ -34,36 +34,30 @@ public class BasicUtils {
         maxReqId = requestRepo.findMaxReqId();
     }
 
-    public Boolean checkNullOrBlank(String input){
-        if(Objects.isNull(input)) return true;
-        input = input.trim();
-        return input.equals("");
+    public Boolean checkNullOrBlank(String input) {
+        return Objects.isNull(input) || input.isBlank();
     }
 
-    public String uniqueUsrIdGenerate()
-    {
+    public String uniqueUsrIdGenerate() {
         String prefix = Constants.UserEntity.PREFIX;
         return prefix + (++maxUsrId);
 
     }
-    public String uniqueRoleIdGenerate()
-    {
+
+    public String uniqueRoleIdGenerate() {
         String prefix = Constants.UserRole.PREFIX;
         return prefix + (++maxRoleId);
 
     }
 
-    public int uniqueReqIdGenerate()
-    {
+    public int uniqueReqIdGenerate() {
         return ++maxReqId;
     }
 
-    public List<ApprovalEntity> calculateApproval(RequestEntity requestEntity)
-    {
+    public List<ApprovalEntity> calculateApproval(RequestEntity requestEntity) {
         List<ApprovalEntity> approvalEntities = new ArrayList<>();
 
-        if (requestEntity.getAmount() >= 100)
-        {
+        if (requestEntity.getAmount() >= 100) {
             ApprovalEntity approvalEntity = new ApprovalEntity();
             approvalEntity.setReqRevID(requestEntity.getReqRevID());
             approvalEntity.setRoleId("rd_2");
@@ -71,16 +65,14 @@ public class BasicUtils {
             approvalEntities.add(approvalEntity);
         }
 
-        if (requestEntity.getAmount() >=500)
-        {
+        if (requestEntity.getAmount() >= 500) {
             ApprovalEntity approvalEntity = new ApprovalEntity();
             approvalEntity.setReqRevID(requestEntity.getReqRevID());
             approvalEntity.setRoleId("rd_3");
             approvalEntity.setApprovalStatus(Constants.ApprovalStatus.New);
             approvalEntities.add(approvalEntity);
         }
-        if (requestEntity.getAmount() >= 700)
-        {
+        if (requestEntity.getAmount() >= 700) {
             ApprovalEntity approvalEntity = new ApprovalEntity();
             approvalEntity.setReqRevID(requestEntity.getReqRevID());
             approvalEntity.setRoleId("rd_4");
